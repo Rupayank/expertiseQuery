@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_EXPERTISE_QUERY")
+}
+
+enum LEVEL_OF_EXPERIENCE {
+  BASIC
+  INTERMIDIATE
+  ADVANCED
+}
+
+model Query {
+  id                String              @id @default(uuid())
+  userId            String
+  userName          String
+  userEmail         String
+  domainName        String
+  skillName         String[]
+  levelOfExperience LEVEL_OF_EXPERIENCE @default(BASIC)
+  yearOfExperience  Int                 @default(0)
+}
