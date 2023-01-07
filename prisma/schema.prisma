@@ -16,7 +16,7 @@ enum LEVEL_OF_EXPERIENCE {
   ADVANCED
 }
 
-model Query {
+model ExpertiseQuery {
   id                String              @id @default(uuid())
   userId            String
   userName          String

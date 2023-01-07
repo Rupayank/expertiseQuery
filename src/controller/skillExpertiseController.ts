@@ -1,13 +1,26 @@
-import { BadRequestError } from '@hackathonskilldb/common-middlewares';
-import { Query } from '@prisma/client';
+import { ExpertiseQuery } from '@prisma/client';
 import { Request, Response } from 'express';
 import {
+  getDomains,
   getUserSkillExpertise,
   getAllUserSkillExpertise,
   addUserSkillExpertise,
-  updateUserSkillExpertise,
-  deleteUserSkillExpertise,
 } from '../handlers/skillExpertiseHandler';
+
+async function getUniqueDomains(req: Request, res: Response) {
+  try {
+    await getDomains().then((domain) => {
+      const domainArr = [];
+      domain.forEach((ele) => {
+        domainArr.push(ele.domainName);
+      });
+      res.status(200).send({ message: 'Unique domains', response: domainArr });
+    });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+}
+
 async function getUserExpertise(req: Request, res: Response) {
   try {
     const expertise = await getUserSkillExpertise(req.currentUser.id);
@@ -20,13 +33,20 @@ async function getUserExpertise(req: Request, res: Response) {
 async function getAllExpertise(req: Request, res: Response) {
   try {
     const domain = req.query.domain as string;
-    const skill = req.query.skill as string;
+    let skills: string[];
+    if (req.query.skill) {
+      skills = (req.query.skill as string).toLowerCase().split(',');
+      console.log(skills);
+    }
     const experience = req.query.experience as string;
     const years = req.query.years as string;
     await getAllUserSkillExpertise().then((expertise) => {
-      let data: Array<Query> = expertise;
+      let data: Array<ExpertiseQuery> = expertise;
       if (domain) {
-        data = data.filter((ele) => ele.domainName === domain.toUpperCase());
+        data = data.filter((ele) => ele.domainName === domain);
+      }
+      if (skills) {
+        data = data.filter((ele) => JSON.stringify(ele.skillName) === JSON.stringify(skills));
       }
       if (experience) {
         data = data.filter((ele) => ele.levelOfExperience === experience.toUpperCase());
@@ -57,42 +77,9 @@ async function addExpertise(req: Request, res: Response) {
     res.status(201).send({ message: 'Added User expertise', response: expertise });
   } catch (err) {
     res.status(500).send({ message: err.message });
+    {
+    }
   }
 }
 
-async function updateExpertise(req: Request, res: Response) {
-  const id = req.query.id as string;
-  if (!id) {
-    throw new BadRequestError('Id should be prsent');
-  }
-  const expertiseExists = await getUserSkillExpertise(id);
-  if (!expertiseExists) {
-    throw new BadRequestError('Expertise does not exist');
-  }
-  try {
-    const { levelOfExperience, yearOfExperience } = req.body;
-    const expertise = await updateUserSkillExpertise(id, levelOfExperience, yearOfExperience);
-    res.status(200).send({ message: 'Updated User expertise', response: expertise });
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
-}
-
-async function deleteExpertise(req: Request, res: Response) {
-  const id = req.query.id as string;
-  if (!id) {
-    throw new BadRequestError('Id should be prsent');
-  }
-  const expertiseExists = await getUserSkillExpertise(id);
-  if (!expertiseExists) {
-    throw new BadRequestError('Expertise does not exist');
-  }
-  try {
-    const deleteExpertise = await deleteUserSkillExpertise(id);
-    res.status(200).send({ message: 'Deleted User Expertise', response: deleteExpertise });
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
-}
-
-export { getUserExpertise, getAllExpertise, addExpertise, updateExpertise, deleteExpertise };
+export { getUniqueDomains, getUserExpertise, getAllExpertise, addExpertise };

@@ -1,14 +1,14 @@
 /*
   Warnings:
 
-  - You are about to drop the `UserSkill` table. If the table is not empty, all the data it contains will be lost.
+  - You are about to drop the `Query` table. If the table is not empty, all the data it contains will be lost.
 
 */
 -- DropTable
-DROP TABLE "UserSkill";
+DROP TABLE "Query";
 
 -- CreateTable
-CREATE TABLE "Query" (
+CREATE TABLE "ExpertiseQuery" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "userName" TEXT NOT NULL,
@@ -18,5 +18,5 @@ CREATE TABLE "Query" (
     "levelOfExperience" "LEVEL_OF_EXPERIENCE" NOT NULL DEFAULT 'BASIC',
     "yearOfExperience" INTEGER NOT NULL DEFAULT 0,
 
-    CONSTRAINT "Query_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ExpertiseQuery_pkey" PRIMARY KEY ("id")
 );

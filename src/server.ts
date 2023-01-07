@@ -9,7 +9,7 @@ import {
   currentUser,
   requireAuth,
 } from '@hackathonskilldb/common-middlewares';
-import { getAllExpertise, addExpertise, updateExpertise, deleteExpertise } from './controller/skillExpertiseController';
+import { getUniqueDomains, getAllExpertise, addExpertise } from './controller/skillExpertiseController';
 
 const app = express();
 
@@ -27,16 +27,9 @@ app.use(
 app.use(currentUser);
 
 // Routes
-// app.get('/skill/expertise', requireAuth, getUserExpertise);
-// app.get('/skill/expertise/all', requireAuth, getAllExpertise);
-// app.post('/skill/expertise', requireAuth, requestValidate, validateRequest, addExpertise);
-// app.put('/skill/expertise', requireAuth, requestValidate, validateRequest, updateExpertise);
-// app.delete('/skill/expertise', requireAuth, deleteExpertise);
-
-app.get('/query', getAllExpertise);
-app.post('/query', addExpertise);
-app.put('/query', updateExpertise);
-app.delete('/query', deleteExpertise);
+app.get('/query', requireAuth, getAllExpertise);
+app.get('/domain', requireAuth, getUniqueDomains);
+app.post('/query', requireAuth, requestValidate, validateRequest, addExpertise);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

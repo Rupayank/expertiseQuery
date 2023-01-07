@@ -1,13 +1,24 @@
-import { Query } from '@prisma/client';
+import { ExpertiseQuery, LEVEL_OF_EXPERIENCE } from '@prisma/client';
+import Domains from '../interface/expertise';
 import prisma from '../utils/db';
 
-export const getUserSkillExpertise = async (userId: string): Promise<Query[]> => {
-  const skillExpertise = await prisma.query.findMany({ where: { userId } });
+export const getDomains = async (): Promise<Domains[]> => {
+  const skillExpertise = await prisma.expertiseQuery.findMany({
+    distinct: ['domainName'],
+    select: {
+      domainName: true,
+    },
+  });
   return skillExpertise;
 };
 
-export const getAllUserSkillExpertise = async (): Promise<Query[]> => {
-  const allSkillExpertise = await prisma.query.findMany({});
+export const getUserSkillExpertise = async (userId: string): Promise<ExpertiseQuery[]> => {
+  const skillExpertise = await prisma.expertiseQuery.findMany({ where: { userId } });
+  return skillExpertise;
+};
+
+export const getAllUserSkillExpertise = async (): Promise<ExpertiseQuery[]> => {
+  const allSkillExpertise = await prisma.expertiseQuery.findMany({});
   return allSkillExpertise;
 };
 
@@ -17,10 +28,10 @@ export const addUserSkillExpertise = async (
   userEmail: string,
   domainName: string,
   skillName: string[],
-  levelOfExperience: 'BASIC' | 'INTERMIDIATE' | 'ADVANCED',
+  levelOfExperience: LEVEL_OF_EXPERIENCE,
   yearOfExperience: number,
-): Promise<Query> => {
-  const skillExpertise = await prisma.query.create({
+): Promise<ExpertiseQuery> => {
+  const skillExpertise = await prisma.expertiseQuery.create({
     data: {
       userId,
       userName,
@@ -31,25 +42,6 @@ export const addUserSkillExpertise = async (
       yearOfExperience,
     },
   });
+  console.log(skillExpertise);
   return skillExpertise;
-};
-
-export const updateUserSkillExpertise = async (
-  id: string,
-  levelOfExperience: 'BASIC' | 'INTERMIDIATE' | 'ADVANCED',
-  yearOfExperience: number,
-): Promise<Query> => {
-  const updateUserSkill = await prisma.query.update({
-    where: {
-      id,
-    },
-    data: {
-      levelOfExperience,
-      yearOfExperience,
-    },
-  });
-  return updateUserSkill;
-};
-export const deleteUserSkillExpertise = async (id: string) => {
-  return prisma.query.delete({ where: { id } });
 };
