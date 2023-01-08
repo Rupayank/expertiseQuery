@@ -1,11 +1,6 @@
 import { ExpertiseQuery } from '@prisma/client';
 import { Request, Response } from 'express';
-import {
-  getDomains,
-  getUserSkillExpertise,
-  getAllUserSkillExpertise,
-  addUserSkillExpertise,
-} from '../handlers/skillExpertiseHandler';
+import { getDomains, getAllUserSkillExpertise, addUserSkillExpertise } from '../handlers/skillExpertiseHandler';
 
 async function getUniqueDomains(req: Request, res: Response) {
   try {
@@ -16,15 +11,6 @@ async function getUniqueDomains(req: Request, res: Response) {
       });
       res.status(200).send({ message: 'Unique domains', response: domainArr });
     });
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
-}
-
-async function getUserExpertise(req: Request, res: Response) {
-  try {
-    const expertise = await getUserSkillExpertise(req.currentUser.id);
-    res.status(200).send({ message: 'User expertise', response: expertise });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
@@ -82,4 +68,4 @@ async function addExpertise(req: Request, res: Response) {
   }
 }
 
-export { getUniqueDomains, getUserExpertise, getAllExpertise, addExpertise };
+export { getUniqueDomains, getAllExpertise, addExpertise };

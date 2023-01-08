@@ -12,11 +12,6 @@ export const getDomains = async (): Promise<Domains[]> => {
   return skillExpertise;
 };
 
-export const getUserSkillExpertise = async (userId: string): Promise<ExpertiseQuery[]> => {
-  const skillExpertise = await prisma.expertiseQuery.findMany({ where: { userId } });
-  return skillExpertise;
-};
-
 export const getAllUserSkillExpertise = async (): Promise<ExpertiseQuery[]> => {
   const allSkillExpertise = await prisma.expertiseQuery.findMany({});
   return allSkillExpertise;
@@ -42,6 +37,5 @@ export const addUserSkillExpertise = async (
       yearOfExperience,
     },
   });
-  console.log(skillExpertise);
   return skillExpertise;
 };
